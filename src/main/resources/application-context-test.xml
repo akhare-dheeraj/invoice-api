@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="${${env.property}.dataSource.driverClassName}" />
+		<property name="url" value="${${env.property}.dataSource.url}" />
+		<property name="username" value="${${env.property}.dataSource.username}" />
+		<property name="password" value="" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="entityInterceptor" ref="baseInterceptor" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.invoice.api.bean.InvoiceBean</value>
+				<value>com.invoice.api.bean.InvoiceItemBean</value>
+				<value>com.invoice.api.bean.ItemBean</value>
+				<value>com.invoice.api.bean.TaxBean</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${${env.property}.hibernate.dialect}</prop>
+				<prop key="hibernate.current_session_context_class">${${env.property}.hibernate.current_session_context_class}</prop>
+				<prop key="hibernate.show_sql">${${env.property}.hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${${env.property}.hibernate.hbm2ddl.auto}</prop>
+			</props>
+		</property>
+	</bean>
+
+	
+	<bean id="baseDao" class = "com.invoice.api.dao.TaxBeanDaoImpl" />
+	<bean id="invoiceDao" class = "com.invoice.api.dao.InvoiceBeanDaoImpl" />
+	<bean id="invoiceItemDao" class = "com.invoice.api.dao.InvoiceItemBeanDaoImpl" />
+	<bean id="itemBeanDao" class = "com.invoice.api.dao.ItemBeanDaoImpl" />
+	<bean id="taxBeanDao" class = "com.invoice.api.dao.TaxBeanDaoImpl" />
+	<bean id="invoiceBeanService" class = "com.invoice.api.service.InvoiceBeanService" />
+	<bean id="itemBeanService" class = "com.invoice.api.service.ItemBeanService" />
+	<bean id="validator" class="com.invoice.api.dto.validator.DtoValidator"/>
+	
+	<bean id="baseInterceptor" class="com.invoice.api.bean.interceptor.BaseInvoiceBeanInterceptor" />
+</beans>
